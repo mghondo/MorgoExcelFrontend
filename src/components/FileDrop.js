@@ -12,12 +12,14 @@ const FileDrop = ({ colId }) => {
     setIsLoading(true);
     setError(null);
     const formData = new FormData();
+    var baseUrl = "http://127.0.0.1:5000"
+    // var baseUrl = "https://api.morgotools.com"
     formData.append("file", acceptedFiles[0]);
 
     console.log("Uploading file:", acceptedFiles[0].name);
 
     axios
-      .post("https://api.morgotools.com/upload/morning", formData, {
+      .post(`${baseUrl}/upload/morning`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -25,7 +27,7 @@ const FileDrop = ({ colId }) => {
       .then((response) => {
         console.log("Response from server:", response.data);
         const filename = response.data.filename;
-        const downloadUrl = `https://api.morgotools.com/download/morning/${filename}`;
+        const downloadUrl = `${baseUrl}/download/morning/${filename}`;
         setDownloadLink(downloadUrl);
         console.log("Download link set:", downloadUrl);
       })

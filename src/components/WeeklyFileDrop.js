@@ -9,6 +9,7 @@ const WeeklyFileDrop = () => {
   const [error, setError] = useState(null);
   const [showAlert, setShowAlert] = useState(false); // State to control alert visibility
 
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowAlert(true);
@@ -18,6 +19,8 @@ const WeeklyFileDrop = () => {
   }, []);
 
   const onDrop = useCallback((acceptedFiles) => {
+    var baseUrl = "http://127.0.0.1:5000"
+    // var baseUrl = "https://api.morgotools.com"
     setIsLoading(true);
     setError(null);
     const formData = new FormData();
@@ -26,7 +29,7 @@ const WeeklyFileDrop = () => {
     console.log("Uploading weekly file:", acceptedFiles[0].name);
 
     axios
-      .post("https://api.morgotools.com/upload/weekly", formData, {
+      .post(`${baseUrl}/upload/weekly`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -34,7 +37,7 @@ const WeeklyFileDrop = () => {
       .then((response) => {
         console.log("Response from server:", response.data);
         const filename = response.data.filename;
-        const downloadUrl = `https://api.morgotools.com/download/weekly/${filename}`;
+        const downloadUrl = `${baseUrl}/download/weekly/${filename}`;
         setDownloadLink(downloadUrl);
         console.log("Download link set:", downloadUrl);
       })
