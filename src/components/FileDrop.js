@@ -12,8 +12,8 @@ const FileDrop = ({ colId }) => {
     setIsLoading(true);
     setError(null);
     const formData = new FormData();
-    var baseUrl = "http://127.0.0.1:5000"
-    // var baseUrl = "https://api.morgotools.com"
+    // var baseUrl = "http://127.0.0.1:5000"
+    var baseUrl = "https://api.morgotools.com"
     formData.append("file", acceptedFiles[0]);
 
     console.log("Uploading file:", acceptedFiles[0].name);

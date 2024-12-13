@@ -19,8 +19,8 @@ const WeeklyFileDrop = () => {
   }, []);
 
   const onDrop = useCallback((acceptedFiles) => {
-    var baseUrl = "http://127.0.0.1:5000"
-    // var baseUrl = "https://api.morgotools.com"
+    // var baseUrl = "http://127.0.0.1:5000"
+    var baseUrl = "https://api.morgotools.com"
     setIsLoading(true);
     setError(null);
     const formData = new FormData();
