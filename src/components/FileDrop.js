@@ -7,13 +7,13 @@ const FileDrop = ({ colId }) => {
   const [downloadLink, setDownloadLink] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [filename, setFilename] = useState(null);
 
   const onDrop = useCallback((acceptedFiles) => {
     setIsLoading(true);
     setError(null);
     const formData = new FormData();
-    // var baseUrl = "http://127.0.0.1:5000"
-    var baseUrl = "https://api.morgotools.com"
+    var baseUrl = "https://api.morgotools.com";
     formData.append("file", acceptedFiles[0]);
 
     console.log("Uploading file:", acceptedFiles[0].name);
@@ -27,9 +27,13 @@ const FileDrop = ({ colId }) => {
       .then((response) => {
         console.log("Response from server:", response.data);
         const filename = response.data.filename;
-        const downloadUrl = `${baseUrl}/download/morning/${filename}`;
-        setDownloadLink(downloadUrl);
-        console.log("Download link set:", downloadUrl);
+        setFilename(filename);
+        // Wait briefly to ensure file processing is complete
+        setTimeout(() => {
+          const downloadUrl = `${baseUrl}/download/morning/${filename}`;
+          setDownloadLink(downloadUrl);
+          console.log("Download link set:", downloadUrl);
+        }, 1000);
       })
       .catch((error) => {
         console.error("Error uploading file:", error);
@@ -46,15 +50,15 @@ const FileDrop = ({ colId }) => {
     <div className={`col-lg-6 ${colId}`}>
       <h2 className="text-center">Morning Count File Drop</h2>
       <div className="text-center mt-3">
-    <button 
-      type="button" 
-      className="btn btn-info" 
-      style={{ backgroundColor: '#3d6428', color: 'white', borderColor: '#3a4534' }}
-      onClick={() => window.open('https://youtu.be/lFuMdu2-vlo', '_blank')}
-    >
-      Instructional Video
-    </button>
-  </div>
+        <button 
+          type="button" 
+          className="btn btn-info" 
+          style={{ backgroundColor: '#3d6428', color: 'white', borderColor: '#3a4534' }}
+          onClick={() => window.open('https://youtu.be/lFuMdu2-vlo', '_blank')}
+        >
+          Instructional Video
+        </button>
+      </div>
       <div className="card mt-3" style={{ margin: "30px" }}>
         <div className="card-body">
           <div {...getRootProps({ className: "dropzone" })}>
@@ -85,10 +89,27 @@ const FileDrop = ({ colId }) => {
               >
                 <a
                   href={downloadLink}
-                  download
+                  onClick={(e) => {
+                    e.preventDefault();
+                    fetch(downloadLink)
+                      .then(response => {
+                        if (!response.ok) throw new Error('Download failed');
+                        return response.blob();
+                      })
+                      .then(blob => {
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                      })
+                      .catch(error => setError('Download failed. Please try again.'));
+                  }}
                   className="btn btn-primary mt-3"
                 >
-                  Download Processed Weekly File
+                  Download Processed File
                 </a>
               </div>
             </div>
