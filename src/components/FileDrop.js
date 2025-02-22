@@ -9,7 +9,6 @@ const FileDrop = ({ colId }) => {
   const [error, setError] = useState(null);
   const [filename, setFilename] = useState(null);
 
-  // Set baseUrl for switching between testing and production
   // const baseUrl = "http://127.0.0.1:5000"; // Use this for local testing
   const baseUrl = "https://api.morgotools.com"; // Uncomment for production
 
@@ -51,17 +50,23 @@ const FileDrop = ({ colId }) => {
     }
 
     let recipientEmail;
+    let city;
     if (filename.includes('Marengo')) {
       recipientEmail = 'marengoinventory@verdantcreations.com';
+      city = 'Marengo';
     } else if (filename.includes('Columbus')) {
       recipientEmail = 'columbusinventory@verdantcreations.com';
+      city = 'Columbus';
     } else {
       alert("Unable to determine recipient email from filename.");
       return;
     }
 
-    const mailtoLink = `mailto:${recipientEmail}?body=Please find the morning count file attached.`;
-    window.location.href = mailtoLink;
+    const currentDate = new Date().toLocaleDateString('en-US');
+    const subject = encodeURIComponent(`${city} Morning Count File ${currentDate}`);
+    
+    const mailtoLink = `mailto:${recipientEmail}?subject=${subject}`;
+    window.open(mailtoLink, '_blank');
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
@@ -114,9 +119,9 @@ const FileDrop = ({ colId }) => {
                 >
                   Download Processed Morning File
                 </a>
-                {/* <button onClick={sendEmail} className="btn btn-success mt-3 ml-2">
+                <button onClick={sendEmail} className="btn btn-success mt-3 ml-2">
                   Send Email
-                </button> */}
+                </button>
               </div>
             </div>
           )}
