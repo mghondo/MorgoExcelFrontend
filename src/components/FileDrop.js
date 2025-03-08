@@ -9,8 +9,8 @@ const FileDrop = ({ colId }) => {
   const [error, setError] = useState(null);
   const [filename, setFilename] = useState(null);
 
-  const baseUrl = "http://127.0.0.1:5000"; // Use this for local testing
-  // const baseUrl = "https://api.morgotools.com"; // Uncomment for production
+  // const baseUrl = "http://127.0.0.1:5000"; // Use this for local testing
+  const baseUrl = "https://api.morgotools.com"; // Uncomment for production
 
   const onDrop = useCallback((acceptedFiles) => {
     setIsLoading(true);
