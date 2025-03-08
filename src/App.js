@@ -5,6 +5,7 @@ import WeeklyFileDrop from "./components/WeeklyFileDrop";
 import "./App.css";
 import NavBar from "./components/NavBar/NavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
+import AccWeekly from "./components/AccWeekly.";
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
         <div className="row">
           <FileDrop colId="col1" />
           <WeeklyFileDrop />
+          {/* <AccWeekly/> */}
         </div>
       </div>
     </div>

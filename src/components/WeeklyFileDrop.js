@@ -19,8 +19,8 @@ const WeeklyFileDrop = () => {
   }, []);
 
   const onDrop = useCallback((acceptedFiles) => {
-    // var baseUrl = "http://127.0.0.1:5000"
-    var baseUrl = "https://api.morgotools.com"
+    var baseUrl = "http://127.0.0.1:5000"
+    // var baseUrl = "https://api.morgotools.com"
     setIsLoading(true);
     setError(null);
     const formData = new FormData();
@@ -107,7 +107,7 @@ const WeeklyFileDrop = () => {
               </div>
             </div>
           )}
-          {showAlert && ( // Conditionally render the alert
+          {/* {showAlert && ( // Conditionally render the alert
             <div
               className="alert alert-warning"
               role="alert"
@@ -119,7 +119,7 @@ const WeeklyFileDrop = () => {
                 then 'Select All' for the list to render properly.
               </p>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </div>
