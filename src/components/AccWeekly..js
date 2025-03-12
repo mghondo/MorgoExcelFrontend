@@ -10,8 +10,8 @@ const AccWeekly = () => {
   const [error, setError] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
 
-  const baseUrl = "http://127.0.0.1:5000";
-  // const baseUrl = "https://api.morgotools.com";
+  // const baseUrl = "http://127.0.0.1:5000";
+  const baseUrl = "https://api.morgotools.com";
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -106,7 +106,7 @@ const AccWeekly = () => {
           </div>
         </div>
         <div className="col-md-6 mb-4">
-          <h2 className="text-center">Dutchie File Drop</h2>
+          <h2 className="text-center">Dutchie File Drop for Verdant Staff</h2>
           <div className="card mt-3" style={{ margin: "30px" }}>
             <div className="card-body">
               <div {...getDutchieRootProps({ className: "dropzone" })}>

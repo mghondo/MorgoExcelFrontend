@@ -16,7 +16,7 @@ const App = () => {
         <div className="row">
           <FileDrop colId="col1" />
           <WeeklyFileDrop />
-          {/* <AccWeekly/> */}
+          <AccWeekly/>
         </div>
       </div>
     </div>

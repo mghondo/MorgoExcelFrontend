@@ -90,6 +90,9 @@ const FileDrop = ({ colId }) => {
             <input {...getInputProps()} />
             {isDragActive ? (
               <p>Drop the file here ...</p>
+            
+
+              
             ) : (
               <p>Drag 'n' drop an Excel file here, or click to select one</p>
             )}
@@ -104,6 +107,8 @@ const FileDrop = ({ colId }) => {
                 style={{ marginTop: "10px" }}
               >
                 <p className="text-center">File processed successfully!</p>
+                {/* bootstrap primary button */}
+                
               </div>
               <div
                 style={{
