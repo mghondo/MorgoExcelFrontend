@@ -9,9 +9,10 @@ const AccWeekly = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
+  const [filename, setFilename] = useState(null); // Store filename here
 
-  // const baseUrl = "http://127.0.0.1:5000";
-  const baseUrl = "https://api.morgotools.com";
+  const baseUrl = "http://127.0.0.1:5000";
+  // const baseUrl = "https://api.morgotools.com";
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -20,6 +21,29 @@ const AccWeekly = () => {
 
     return () => clearTimeout(timer);
   }, []);
+
+  const sendEmail = () => {
+    if (!filename) {
+      alert("No file has been uploaded yet.");
+      return;
+    }
+    let recipientEmail;
+    let city;
+    if (filename.includes('Marengo')) {
+      recipientEmail = 'marengoinventory@verdantcreations.com';
+      city = 'Marengo';
+    } else if (filename.includes('Columbus')) {
+      recipientEmail = 'columbusinventory@verdantcreations.com';
+      city = 'Columbus';
+    } else {
+      alert("Unable to determine recipient email from filename.");
+      return;
+    }
+    const currentDate = new Date().toLocaleDateString('en-US');
+    const subject = encodeURIComponent(`${city} Weekly File ${currentDate}`);
+    const mailtoLink = `mailto:${recipientEmail}?subject=${subject}`;
+    window.open(mailtoLink, '_blank');
+  };
 
   const handleFileDrop = useCallback((acceptedFiles, fileType) => {
     setIsLoading(true);
@@ -37,6 +61,7 @@ const AccWeekly = () => {
       .then((response) => {
         console.log("Response from server:", response.data);
         const filename = response.data.filename;
+        setFilename(filename); // Update filename state
         const downloadUrl = `${baseUrl}/download/${fileType}/${filename}`;
         if (fileType === 'metric') {
           setMetricDownloadLink(downloadUrl);
@@ -129,6 +154,13 @@ const AccWeekly = () => {
                       Download Processed Dutchie File
                     </a>
                   </div>
+                  {filename && (
+                    <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
+                      <button onClick={sendEmail} className="btn btn-success mt-3">
+                        Send Email
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -143,6 +175,8 @@ const AccWeekly = () => {
           </p>
         </div>
       )} */}
+      {/* Manual email sending button */}
+
     </div>
   );
 };
