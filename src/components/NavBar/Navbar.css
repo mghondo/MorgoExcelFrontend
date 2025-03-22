@@ -10,3 +10,10 @@
 .nav-link {
     color: rgb(255 255 255 / 98%);
 }
+
+.nav-link.active {
+    color: #fff; /* Change to your desired color */
+    background-color: #333; /* Change to your desired background color */
+    /* border-radius: 5px; Optional */
+  }
+  

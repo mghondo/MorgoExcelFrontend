@@ -11,8 +11,10 @@ const AccWeekly = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [filename, setFilename] = useState(null); // Store filename here
 
-  // const baseUrl = "http://127.0.0.1:5000";
-  const baseUrl = "https://api.morgotools.com";
+  const baseUrl =
+  window.location.hostname === "localhost"
+    ? "http://127.0.0.1:5000" // Local development API
+    : "https://api.morgotools.com"; // Live production API
 
   useEffect(() => {
     const timer = setTimeout(() => {

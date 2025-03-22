@@ -1,0 +1,23 @@
+.form-label {
+    font-weight: bold;
+}
+
+.other-color{
+    /* background-color: #e6e6e6; */
+    /* border: 1px;
+    border-color: #485c79; */
+}
+
+.myButton {
+    background-color: #3d6428;
+}
+
+.forgotPassword {
+    background-color: #485c79;
+    border-color: #485c79;
+
+}
+
+.orderLogin {
+    border-color: #b1acac;
+}

@@ -1,17 +1,15 @@
 import React from "react";
 import { Navbar, Nav, Container } from "react-bootstrap";
+import { NavLink } from 'react-router-dom'; // Import NavLink
 import logo from "../../images/VerdantLogo.jpg"; // Adjust the path as needed
 import "./Navbar.css"; // Import the CSS file
 
 const NavBar = () => {
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
-      {" "}
-      {/* Changed bg to "dark" and added variant */}
       <Container>
         <Navbar.Brand
-          href="https://www.verdantcreations.com/"
-          target="_blank"
+          href="/"
           rel="noopener noreferrer"
         >
           <img
@@ -26,6 +24,12 @@ const NavBar = () => {
         <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
           <Nav>
             <Nav.Link
+              href="/"
+              rel="noopener noreferrer"
+            >
+              Home
+            </Nav.Link>
+            {/* <Nav.Link
               href="https://pine.backoffice.dutchie.com/"
               target="_blank"
               rel="noopener noreferrer"
@@ -45,6 +49,10 @@ const NavBar = () => {
               rel="noopener noreferrer"
             >
               Shop Verdant
+            </Nav.Link> */}
+            {/* Use NavLink for the Ordering page */}
+            <Nav.Link href="/ordering" className={({ isActive }) => (isActive ? 'active' : '')}>
+              Ordering
             </Nav.Link>
           </Nav>
         </Navbar.Collapse>

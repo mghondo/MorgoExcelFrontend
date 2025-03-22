@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./JumbotronComponent.css";
 
-const JumbotronComponent = () => {
+const JumbotronComponent = ({
+  title = "Morgo Tools",
+  showSlogan = true, // New prop to control slogan visibility
+}) => {
   const [showZach, setShowZach] = useState(false);
 
   useEffect(() => {
@@ -31,14 +34,17 @@ const JumbotronComponent = () => {
   return (
     <div className="jumbotron jumbotron-fluid jumbotron-custom">
       <div className="container-fluid text-center">
-        <h1 className="display-4">Morgo Tools</h1>
-        <h4>
-          Making the day faster.
-          {/* {showZach && ".....except for Zach!!"} */}
-        </h4>
+        <h1 className="display-4">{title}</h1>
+        {showSlogan && (
+          <h4>
+            Making the day faster.
+            {/* {showZach && ".....except for Zach!!"} */}
+          </h4>
+        )}
       </div>
     </div>
   );
 };
 
 export default JumbotronComponent;
+
