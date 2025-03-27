@@ -1,11 +1,22 @@
 // src/Login.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { auth } from '../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import ResetPassword from './ResetPassword'; // Import ResetPassword component
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 function Login({ onLoginSuccess }) {
+
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      once: true
+    });
+  }, []);
+
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
@@ -36,7 +47,7 @@ function Login({ onLoginSuccess }) {
         <ResetPassword onClose={handleResetPasswordClose} />
       ) : (
         // Display Login form when showResetPassword is false
-        <form onSubmit={handleLogin} className="container mt-5">
+        <form onSubmit={handleLogin} className="container mt-5" data-aos="fade-up">
           <div className="card shadow p-3 mb-5 bg-white rounded">
             <div className="card-body other-color">
               <h2 className="card-title text-center mb-4">Login</h2>

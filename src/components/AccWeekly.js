@@ -2,8 +2,17 @@ import React, { useCallback, useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const AccWeekly = () => {
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      once: true
+    });
+  }, []);
+
   const [metricDownloadLink, setMetricDownloadLink] = useState(null);
   const [dutchieDownloadLink, setDutchieDownloadLink] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -103,7 +112,7 @@ const AccWeekly = () => {
     <div className="container mt-5">
       <h1 className="text-center mb-4">Accounting Weekly</h1>
       <div className="row">
-        <div className="col-md-6 mb-4">
+        <div className="col-md-6 mb-4" data-aos="fade-right">
           <h2 className="text-center">Metric File Drop</h2>
           <div className="card mt-3" style={{ margin: "30px" }}>
             <div className="card-body">
@@ -132,7 +141,7 @@ const AccWeekly = () => {
             </div>
           </div>
         </div>
-        <div className="col-md-6 mb-4">
+        <div className="col-md-6 mb-4" data-aos="fade-left">
           <h2 className="text-center">Dutchie File Drop for Verdant Staff</h2>
           <div className="card mt-3" style={{ margin: "30px" }}>
             <div className="card-body">

@@ -1,10 +1,21 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+
 
 
 const FileDrop = ({ colId }) => {
+
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      once: true
+    });
+  }, []);
+
   const [downloadLink, setDownloadLink] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -76,7 +87,7 @@ const FileDrop = ({ colId }) => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   return (
-    <div className={`col-lg-6 ${colId}`}>
+    <div className={`col-lg-6 ${colId}`} data-aos="fade-right">
       <h2 className="text-center">Morning Count File Drop</h2>
       <div className="text-center mt-3">
         <button 
