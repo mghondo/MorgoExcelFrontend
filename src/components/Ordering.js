@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import './ordering.css';
 import JumbotronComponent from './Jumbotron/JumbotronComponent';
 import Login from './Login';
+import OrderingPredict from './OrderingPredict';
 
 function Ordering() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -23,7 +24,7 @@ function Ordering() {
   return (
     <>
        <JumbotronComponent title="Welcome" showSlogan={false}/>
-      Ordering Page
+       <OrderingPredict/>
     </>
   );
 }

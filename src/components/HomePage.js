@@ -13,6 +13,7 @@ function HomePage() {
         <FileDrop colId="col1" />
         <WeeklyFileDrop />
         <AccWeekly />
+
       </div>
     </div>
     </>

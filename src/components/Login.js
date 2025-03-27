@@ -50,7 +50,11 @@ function Login({ onLoginSuccess }) {
               </div>
               <button type="submit" className="btn btn-success w-100 mb-3 myButton">Login</button>
               <button type="button" className="btn btn-primary w-100 forgotPassword" onClick={handleResetPasswordClick}>Forgot Password?</button>
-              {error && <div className="alert alert-danger">{error}</div>}
+
+              {error && 
+              // inline style margin top 15px
+              <div style={{marginTop:'15px'}} className="alert alert-danger">{error}
+              </div>}
             </div>
           </div>
         </form>

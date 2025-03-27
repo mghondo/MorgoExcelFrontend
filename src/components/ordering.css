@@ -21,3 +21,18 @@
 .orderLogin {
     border-color: #b1acac;
 }
+
+.border-dashed {
+    border: 2px dashed #007bff;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .p-4 {
+    padding: 20px;
+  }
+
+.mt-1 {
+    text-align: center;
+  }
