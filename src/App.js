@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 import JumbotronComponent from "./components/Jumbotron/JumbotronComponent";
 import FileDrop from "./components/FileDrop";
 import WeeklyFileDrop from "./components/WeeklyFileDrop";
@@ -7,40 +7,48 @@ import "./App.css";
 import NavBar from "./components/NavBar/NavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import AccWeekly from "./components/AccWeekly";
-import Ordering from "./components/Ordering"; // Import your Ordering component
-import HomePage from "./components/HomePage"; // Import HomePage component
+import Ordering from "./components/Ordering";
+import HomePage from "./components/HomePage";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-
+import Footer from "./components/Footer";
 
 function App() {
   useEffect(() => {
     AOS.init({
-      // Optional settings
-      disable: "phone", // Disable on mobile
-      duration: 700,    // Animation duration
-      easing: "ease-out-cubic", // Animation easing
-      once: true,       // Run animation once
+      disable: "phone",
+      duration: 700,
+      easing: "ease-out-cubic",
+      once: true,
     });
   }, []);
+
   return (
     <BrowserRouter>
       <div className="container-fluid p-0">
-        <NavBar />
-
-        {/* Render your main content here */}
-        {/* <JumbotronComponent title="Morgo Tools" /> */}
         <Routes>
-        <Route path="/" element={<HomePage />} />
-        </Routes>
-        
-        <Routes>
-          <Route path="/ordering" element={<Ordering />} />
-          {/* Add routes for other components if needed */}
+          <Route element={<Layout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/ordering" element={<Ordering />} />
+            {/* Add other routes here as needed */}
+          </Route>
         </Routes>
       </div>
     </BrowserRouter>
   );
 }
+
+// Layout component to wrap shared elements
+const Layout = () => {
+  return (
+    <>
+      <NavBar />
+      <main style={{ paddingBottom: '60px' }}>
+        <Outlet />
+      </main>
+      <Footer />
+    </>
+  );
+};
 
 export default App;

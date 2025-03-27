@@ -1,14 +1,26 @@
 // OrderingPredict.js
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import axios from 'axios';
 import { useDropzone } from 'react-dropzone';
 import './ordering.css';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const baseUrl = window.location.hostname === "localhost" 
   ? "http://127.0.0.1:5000" 
   : "https://api.morgotools.com";
 
 const OrderingPredict = () => {
+
+    const [location, setLocation] = useState('');
+
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      once: true
+    });
+  }, []);
+
   const [file, setFile] = useState(null);
   const [numDays, setNumDays] = useState('');
   const [results, setResults] = useState(null);
@@ -41,12 +53,13 @@ const OrderingPredict = () => {
     formData.append('numOfDays', numDays);
 
     try {
-      const response = await axios.post(`${baseUrl}/process-order`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-      setResults(response.data);
-      setSelectedItems({});
-      setError('');
+        const response = await axios.post(`${baseUrl}/process-order`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        setResults(response.data.vendor_data);
+        setLocation(response.data.location);
+        setSelectedItems({});
+        setError('');
     } catch (err) {
       setError(err.response?.data?.error || 'Processing failed');
       setResults(null);
@@ -64,32 +77,52 @@ const OrderingPredict = () => {
       const currentVendorItems = results[vendor];
       const currentSelected = prevSelected[vendor] || [];
       const allSelected = currentSelected.length === currentVendorItems.length;
-      
       return {
-        ...prevSelected,
         [vendor]: allSelected ? [] : currentVendorItems.map((_, index) => index)
       };
     });
   };
+  
 
   const handleCheckboxChange = (vendor, index) => {
     setSelectedItems(prevSelected => {
-      const vendorSelected = prevSelected[vendor] || [];
-      if (vendorSelected.includes(index)) {
-        return {
-          ...prevSelected,
-          [vendor]: vendorSelected.filter(i => i !== index)
-        };
+      const newSelected = {};
+      // If the clicked item is being checked, uncheck all other vendors
+      if (!prevSelected[vendor]?.includes(index)) {
+        newSelected[vendor] = [...(prevSelected[vendor] || []), index];
+      } else {
+        // If the clicked item is being unchecked, just update that vendor
+        newSelected[vendor] = prevSelected[vendor].filter(i => i !== index);
       }
-      return {
-        ...prevSelected,
-        [vendor]: [...vendorSelected, index]
-      };
+      return newSelected;
     });
   };
+  
+
+  // New function for handling email sending
+  const handleEmailSend = async (emailType) => {
+    const selectedItemsToSend = {};
+    Object.keys(selectedItems).forEach(vendor => {
+      const selectedIndices = selectedItems[vendor] || [];
+      if (selectedIndices.length > 0) {
+        selectedItemsToSend[vendor] = results[vendor].filter((_, index) => selectedIndices.includes(index));
+      }
+    });
+    try {
+      const response = await axios.post(`${baseUrl}/send-email`, {
+        selectedItems: selectedItemsToSend,
+        emailType,
+        location
+      });
+      alert(response.data.message);
+    } catch (error) {
+      setError('Failed to send email: ' + (error.response?.data?.error || error.message));
+    }
+  };
+  
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-4" data-aos="fade-up">
       <h1 className="text-center mb-4">Drag report by Serial Number</h1>
       <div 
         {...getRootProps({ className: "dropzone" })}
@@ -132,45 +165,64 @@ const OrderingPredict = () => {
         </button>
         </div>
       )}
+        {location && <h1 className="text-center mt-3">Verdant {location} Report</h1>}
+{results && Object.entries(results).map(([vendor, items]) => (
+    <>
 
-      {results && Object.entries(results).map(([vendor, items]) => (
-        <div key={vendor} className="mb-4">
-          <h3 className="h5 mb-2">{vendor}</h3>
-          <div className="ms-auto" style={{paddingBottom: "10px"}}>
-            <button 
-              type="button" 
-              className="btn btn-secondary btn-sm me-2"
-              onClick={() => handleSelectAll(vendor)}
-            >
-              {selectedItems[vendor]?.length === items.length ? 'Unselect All' : 'Select All'}
-            </button>
-            <button type="button" className="btn btn-secondary btn-sm me-2">Notify Verdant</button>
-            <button type="button" className="btn btn-secondary btn-sm">Notify Provider</button>
+
+  <div key={vendor} className="mb-4">
+
+    <h3 className="h5 mb-2">{vendor}</h3>
+    <div className="ms-auto" style={{paddingBottom: "10px"}}>
+      <button 
+        type="button" 
+        className="btn btn-secondary btn-sm me-2"
+        onClick={() => handleSelectAll(vendor)}
+      >
+        {selectedItems[vendor]?.length === items.length ? 'Unselect All' : 'Select All'}
+      </button>
+      <button 
+        type="button" 
+        className="btn btn-secondary btn-sm me-2"
+        onClick={() => handleEmailSend('verdant')}
+      >
+        Notify Verdant
+      </button>
+      <button 
+        type="button" 
+        className="btn btn-secondary btn-sm"
+        onClick={() => handleEmailSend('provider')}
+      >
+        Notify Provider
+      </button>
+    </div>
+    <div className="list-group">
+      {items.map((item, index) => (
+        <label
+          key={index}
+          className={`list-group-item d-flex align-items-center ${getVariantClass(item.daysUntilSoldOut)}`}
+        >
+          <input 
+            type="checkbox" 
+            className="form-check-input me-3" 
+            checked={selectedItems[vendor]?.includes(index) || false}
+            onChange={() => handleCheckboxChange(vendor, index)}
+          />
+          <div>
+            {item.name}
+            <small className="text-muted d-block">
+              {item.daysUntilSoldOut} days remaining (Quantity: {item.remainingQty})
+            </small>
           </div>
-          <div className="list-group">
-            {items.map((item, index) => (
-              <label
-                key={index}
-                className={`list-group-item d-flex align-items-center ${getVariantClass(item.daysUntilSoldOut)}`}
-              >
-                <input 
-                  type="checkbox" 
-                  className="form-check-input me-3" 
-                  checked={selectedItems[vendor]?.includes(index) || false}
-                  onChange={() => handleCheckboxChange(vendor, index)}
-                />
-                <div>
-                  {item.name}
-                  <small className="text-muted d-block">
-                    {item.daysUntilSoldOut} days remaining
-                  </small>
-                </div>
-              </label>
-            ))}
-          </div>
-        </div>
+        </label>
       ))}
     </div>
+  </div>
+  </>
+))}
+
+    </div>
+    
   );
 };
 
