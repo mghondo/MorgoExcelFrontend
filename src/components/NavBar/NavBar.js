@@ -6,7 +6,7 @@ import "./Navbar.css"; // Import the CSS file
 
 const NavBar = () => {
   return (
-    <Navbar bg="dark" variant="dark" expand="lg">
+    <Navbar bg="dark" variant="dark" expand="lg" fixed="top">
       <Container>
         <Navbar.Brand
           href="/"
