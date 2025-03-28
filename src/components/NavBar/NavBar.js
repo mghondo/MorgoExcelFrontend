@@ -54,6 +54,9 @@ const NavBar = () => {
             <Nav.Link href="/ordering" className={({ isActive }) => (isActive ? 'active' : '')}>
               Ordering
             </Nav.Link>
+            <Nav.Link href="/building" className={({ isActive }) => (isActive ? 'active' : '')}>
+              Building
+            </Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

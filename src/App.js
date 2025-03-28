@@ -12,6 +12,7 @@ import HomePage from "./components/HomePage";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import Footer from "./components/Footer";
+import Building from "./components/Building";
 
 function App() {
   useEffect(() => {
@@ -30,6 +31,7 @@ function App() {
           <Route element={<Layout />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/ordering" element={<Ordering />} />
+            <Route path="/building" element={<Building />} />
             {/* Add other routes here as needed */}
           </Route>
         </Routes>
