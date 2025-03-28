@@ -32,7 +32,7 @@ function Ordering() {
 
   return (
     <>
-       <JumbotronComponent title="Welcome" showSlogan={false}/>
+       <JumbotronComponent title="Welcome to Ordering" showSlogan={false}/>
        <OrderingPredict/>
     </>
   );

@@ -6,6 +6,7 @@ import Login from './Login';
 import OrderingPredict from './OrderingPredict';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import BuildingScan from './BuildingScan';
 
 function Building() {
   useEffect(() => {
@@ -32,9 +33,9 @@ function Building() {
 
   return (
     <>
-       <JumbotronComponent title="Welcome" showSlogan={false}/>
-       {/* <OrderingPredict/> */}
-       <h1 className='text-center'>Welcome to Build</h1>
+       <JumbotronComponent title="Welcome to Building" showSlogan={false}/>
+       <BuildingScan/>
+       {/* <h1 className='text-center'>Welcome to Build</h1> */}
        
     </>
   );
