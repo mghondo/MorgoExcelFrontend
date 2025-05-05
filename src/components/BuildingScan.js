@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useDropzone } from 'react-dropzone';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Pagination, Form, Button, Row, Col, InputGroup, Dropdown } from 'react-bootstrap';
+import PDFDropzone from './PDFDropzone';
+import ExpirationDatePicker from './ExpirationDatePicker';
 import './ordering.css';
 import './BuildingScan.css';
 
@@ -14,8 +15,10 @@ const BuildingScan = () => {
   const [scanData, setScanData] = useState(null);
   const [activePage, setActivePage] = useState(0);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const [editedItem, setEditedItem] = useState({});
   const [subType, setSubType] = useState(''); // State for radio button selection
+  const [company, setCompany] = useState(''); // State for editable company
   const [drivers, setDrivers] = useState(''); // State for editable drivers
   const [additionalFields, setAdditionalFields] = useState({
     thc: '',
@@ -32,26 +35,15 @@ const BuildingScan = () => {
     strain: { variant: 'primary', text: 'Copy' },
     days: { variant: 'primary', text: 'Copy' },
     weight: { variant: 'primary', text: 'Copy' },
+    company: { variant: 'primary', text: 'Copy' },
     drivers: { variant: 'primary', text: 'Copy' },
     thc: { variant: 'primary', text: 'Copy' },
     cbd: { variant: 'primary', text: 'Copy' },
     expirationDate: { variant: 'primary', text: 'Copy' }
   });
 
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop: acceptedFiles => {
-      if (acceptedFiles[0]?.type === 'application/pdf') {
-        setFile(acceptedFiles[0]);
-        setError('');
-      } else {
-        setError('Please upload a valid PDF file');
-      }
-    },
-    accept: 'application/pdf',
-    multiple: false
-  });
-
   const handleScan = async () => {
+    setLoading(true);
     const formData = new FormData();
     formData.append('file', file);
 
@@ -66,12 +58,15 @@ const BuildingScan = () => {
       setActivePage(0);
     } catch (err) {
       setError(err.response?.data?.error || 'Scan failed');
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Initialize editedItem, subType, and drivers when scanData or activePage changes
+  // Initialize editedItem, subType, company, and drivers when scanData or activePage changes
   useEffect(() => {
     if (scanData) {
+      setCompany(scanData.company || '');
       setDrivers(scanData.drivers || '');
     }
     if (scanData && scanData.items && scanData.items[activePage]) {
@@ -153,29 +148,50 @@ const BuildingScan = () => {
 
   return (
     <div className="container mt-4">
-      <div {...getRootProps()} className="dropzone p-4 mb-3 border rounded">
-        <input {...getInputProps()} />
-        {file ? (
-          <p>Ready to scan: {file.name}</p>
-        ) : (
-          <p>Drag & drop PDF, or click to select</p>
-        )}
-      </div>
+      <PDFDropzone 
+        file={file} 
+        setFile={setFile} 
+        setError={setError} 
+        loading={loading}
+      />
 
       {error && <div className="alert alert-danger">{error}</div>}
 
-      <button 
-        onClick={handleScan}
-        className="btn btn-primary mb-4"
-        disabled={!file}
-      >
-        Scan PDF
-      </button>
+      <div className="d-flex justify-content-center mb-4">
+        <button 
+          onClick={handleScan}
+          className="btn btn-primary"
+          disabled={!file || loading}
+        >
+          Scan PDF
+        </button>
+      </div>
 
       {scanData && (
         <div className="scan-results">
           <div className="mb-4">
-            <h3>Outbound Transporter: {scanData.company}</h3>
+            <Row className="align-items-center mb-2">
+              <Col xs={1}>
+                <Button 
+                  variant={buttonStates.company.variant} 
+                  size="sm" 
+                  onClick={() => copyToClipboard('company', company || '')}
+                >
+                  {buttonStates.company.text}
+                </Button>
+              </Col>
+              <Col xs={1}>
+                <Form.Label>Company:</Form.Label>
+              </Col>
+              <Col xs={10}>
+                <Form.Control 
+                  type="text" 
+                  value={company} 
+                  placeholder="Enter Company"
+                  onChange={(e) => setCompany(e.target.value)}
+                />
+              </Col>
+            </Row>
             <Row className="align-items-center">
               <Col xs={1}>
                 <Button 
@@ -206,7 +222,7 @@ const BuildingScan = () => {
             <Row>
               {/* Left Column: Existing Inputs */}
               <Col md={6}>
-                <Row className="mb-2 d-flex align-items-center">
+                <Row className="mb-2 d-flex align-items-start">
                   <Col xs={2}>
                     <Button 
                       variant={buttonStates.name.variant} 
@@ -221,7 +237,8 @@ const BuildingScan = () => {
                   </Col>
                   <Col xs={7}>
                     <Form.Control 
-                      type="text" 
+                      as="textarea"
+                      rows={2}
                       value={editedItem.name || ''} 
                       placeholder="Enter Product Name"
                       onChange={(e) => handleInputChange('name', e.target.value)}
@@ -543,14 +560,21 @@ const BuildingScan = () => {
                     <Form.Label>Expiration Date:</Form.Label>
                   </Col>
                   <Col xs={7}>
-                    <Form.Control 
-                      type="text" 
-                      value={additionalFields.expirationDate} 
-                      placeholder="Enter Expiration Date"
-                      onChange={(e) => handleAdditionalFieldChange('expirationDate', e.target.value)}
+                    <ExpirationDatePicker
+                      value={additionalFields.expirationDate}
+                      onChange={(value) => handleAdditionalFieldChange('expirationDate', value)}
                     />
                   </Col>
                 </Row>
+              </Col>
+            </Row>
+            {/* Item Details Row with Heading */}
+            <Row>
+              <Col xs={12}>
+                <h5 className="text-center mb-2">Item Details</h5>
+                <div className="border rounded p-3" style={{ backgroundColor: '#e0e7e0' }}>
+                  <p className="mb-0">{scanData.items[activePage].Item_Details}</p>
+                </div>
               </Col>
             </Row>
           </div>
