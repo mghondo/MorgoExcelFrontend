@@ -5,6 +5,7 @@ import PDFDropzone from './PDFDropzone';
 import ExpirationDatePicker from './ExpirationDatePicker';
 import './ordering.css';
 import './BuildingScan.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const baseUrl = window.location.hostname === "localhost" 
   ? "http://127.0.0.1:5000" 
@@ -63,7 +64,7 @@ const BuildingScan = () => {
     }
   };
 
-  // Initialize editedItem, subType, company, and drivers when scanData or activePage changes
+  // Initialize editedItem, subType, company, drivers, and units when scanData or activePage changes
   useEffect(() => {
     if (scanData) {
       setCompany(scanData.company || '');
@@ -80,14 +81,32 @@ const BuildingScan = () => {
         weight: scanData.items[activePage].weight || ''
       });
 
-      // Set default subType based on Type
+      // Set default subType and units based on Type
       const type = scanData.items[activePage].type || '';
       if (type === 'Flower') {
         setSubType('Ground'); // Default for Flower
+        // Set THC and CBD units to % for Flower
+        setAdditionalFields(prev => ({
+          ...prev,
+          thcUnit: '%',
+          cbdUnit: '%'
+        }));
       } else if (type === 'Edible') {
         setSubType('Gummies'); // Default for Edible
+        // Set THC and CBD units to mg for non-Flower
+        setAdditionalFields(prev => ({
+          ...prev,
+          thcUnit: 'mg',
+          cbdUnit: 'mg'
+        }));
       } else {
         setSubType(''); // Clear subType if Type is neither Flower nor Edible
+        // Set THC and CBD units to mg for non-Flower
+        setAdditionalFields(prev => ({
+          ...prev,
+          thcUnit: 'mg',
+          cbdUnit: 'mg'
+        }));
       }
     }
   }, [scanData, activePage]);
@@ -222,29 +241,6 @@ const BuildingScan = () => {
             <Row>
               {/* Left Column: Existing Inputs */}
               <Col md={6}>
-                <Row className="mb-2 d-flex align-items-start">
-                  <Col xs={2}>
-                    <Button 
-                      variant={buttonStates.name.variant} 
-                      size="sm" 
-                      onClick={() => copyToClipboard('name', editedItem.name || '')}
-                    >
-                      {buttonStates.name.text}
-                    </Button>
-                  </Col>
-                  <Col xs={3}>
-                    <Form.Label>Product Name:</Form.Label>
-                  </Col>
-                  <Col xs={7}>
-                    <Form.Control 
-                      as="textarea"
-                      rows={2}
-                      value={editedItem.name || ''} 
-                      placeholder="Enter Product Name"
-                      onChange={(e) => handleInputChange('name', e.target.value)}
-                    />
-                  </Col>
-                </Row>
                 <Row className="mb-2 d-flex align-items-center">
                   <Col xs={2}>
                     <Button 
@@ -286,6 +282,29 @@ const BuildingScan = () => {
                       value={editedItem.m_number || ''} 
                       placeholder="Enter M Number"
                       onChange={(e) => handleInputChange('m_number', e.target.value)}
+                    />
+                  </Col>
+                </Row>
+                <Row className="mb-2 d-flex align-items-start">
+                  <Col xs={2}>
+                    <Button 
+                      variant={buttonStates.name.variant} 
+                      size="sm" 
+                      onClick={() => copyToClipboard('name', editedItem.name || '')}
+                    >
+                      {buttonStates.name.text}
+                    </Button>
+                  </Col>
+                  <Col xs={3}>
+                    <Form.Label>Product Name:</Form.Label>
+                  </Col>
+                  <Col xs={7}>
+                    <Form.Control 
+                      as="textarea"
+                      rows={2}
+                      value={editedItem.name || ''} 
+                      placeholder="Enter Product Name"
+                      onChange={(e) => handleInputChange('name', e.target.value)}
                     />
                   </Col>
                 </Row>
@@ -416,6 +435,10 @@ const BuildingScan = () => {
                     />
                   </Col>
                 </Row>
+              </Col>
+
+              {/* Right Column: Moved Days Supply and Weight, followed by THC, CBD, and Expiration Date */}
+              <Col md={6}>
                 <Row className="mb-2 d-flex align-items-center">
                   <Col xs={2}>
                     <Button 
@@ -460,10 +483,6 @@ const BuildingScan = () => {
                     />
                   </Col>
                 </Row>
-              </Col>
-
-              {/* Right Column: New Inputs with Copy Buttons and Unit Dropdowns */}
-              <Col md={6}>
                 <Row className="mb-2 d-flex align-items-center">
                   <Col xs={2}>
                     <Button 
@@ -484,6 +503,7 @@ const BuildingScan = () => {
                         value={additionalFields.thc} 
                         id="thc"
                         placeholder="Enter THC"
+                        className={additionalFields.thc === '' ? 'is-invalid' : ''}
                         onChange={(e) => handleAdditionalFieldChange('thc', e.target.value)}
                       />
                       <Dropdown>
@@ -525,6 +545,7 @@ const BuildingScan = () => {
                         value={additionalFields.cbd} 
                         id="cbd"
                         placeholder="Enter CBD"
+                        className={additionalFields.cbd === '' ? 'is-invalid' : ''}
                         onChange={(e) => handleAdditionalFieldChange('cbd', e.target.value)}
                       />
                       <Dropdown>
@@ -563,6 +584,7 @@ const BuildingScan = () => {
                     <ExpirationDatePicker
                       value={additionalFields.expirationDate}
                       onChange={(value) => handleAdditionalFieldChange('expirationDate', value)}
+                      isInvalid={additionalFields.expirationDate === ''}
                     />
                   </Col>
                 </Row>

@@ -16,7 +16,7 @@ const customStyles = `
     line-height: 1.5;
     border: 1px solid #ced4da;
     border-radius: 0.25rem;
-    background-color:rgb(232, 232, 232);
+    background-color: #e0e7e0;
   }
   .react-datepicker__input-container input:focus {
     outline: none;
@@ -25,7 +25,7 @@ const customStyles = `
   }
 `;
 
-const ExpirationDatePicker = ({ value, onChange }) => {
+const ExpirationDatePicker = ({ value, onChange, isInvalid }) => {
   // Parse the initial value (if any) into a Date object
   const [selectedDate, setSelectedDate] = useState(null);
 
@@ -94,7 +94,7 @@ const ExpirationDatePicker = ({ value, onChange }) => {
         onChangeRaw={handleInputChange}
         dateFormat="MM/dd/yyyy"
         placeholderText="MM/DD/YYYY"
-        className="form-control"
+        className={`form-control ${isInvalid ? 'is-invalid' : ''}`}
         minDate={new Date()} // Start from current date
         showMonthDropdown
         showYearDropdown
