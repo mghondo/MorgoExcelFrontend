@@ -18,12 +18,12 @@ const AccWeekly = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
-  const [filename, setFilename] = useState(null); // Store filename here
+  const [filename, setFilename] = useState(null);
 
   const baseUrl =
-  window.location.hostname === "localhost"
-    ? "http://127.0.0.1:5000" // Local development API
-    : "https://api.morgotools.com"; // Live production API
+    window.location.hostname === "localhost"
+      ? "http://127.0.0.1:5000"
+      : "https://api.morgotools.com";
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -70,9 +70,9 @@ const AccWeekly = () => {
         },
       })
       .then((response) => {
-        console.log("Response from server:", response.data);
+        console.log(`Response from server for ${fileType}:`, response.data);
         const filename = response.data.filename;
-        setFilename(filename); // Update filename state
+        setFilename(filename);
         const downloadUrl = `${baseUrl}/download/${fileType}/${filename}`;
         if (fileType === 'metric') {
           setMetricDownloadLink(downloadUrl);
@@ -82,13 +82,14 @@ const AccWeekly = () => {
         console.log(`Download link set for ${fileType}:`, downloadUrl);
       })
       .catch((error) => {
-        console.error("Error uploading file:", error);
-        setError(`Error uploading ${fileType} file. Please try again.`);
+        console.error(`Error uploading ${fileType} file:`, error);
+        const errorMessage = error.response?.data?.error || error.message || "Unknown error occurred";
+        setError(`Error uploading ${fileType} file: ${errorMessage}`);
       })
       .finally(() => {
         setIsLoading(false);
       });
-  }, []);
+  }, [baseUrl]);
 
   const onMetricDrop = useCallback((acceptedFiles) => {
     handleFileDrop(acceptedFiles, 'metric');
@@ -178,16 +179,6 @@ const AccWeekly = () => {
           </div>
         </div>
       </div>
-      {/* {showAlert && (
-        <div className="alert alert-warning" role="alert" style={{ marginTop: "30px" }}>
-          <h4 className="text-center">IMPORTANT</h4>
-          <p className="text-center">
-            Please ensure you're uploading the correct file types for each section.
-          </p>
-        </div>
-      )} */}
-      {/* Manual email sending button */}
-
     </div>
   );
 };

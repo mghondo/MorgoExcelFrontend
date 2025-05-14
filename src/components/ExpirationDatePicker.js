@@ -16,7 +16,7 @@ const customStyles = `
     line-height: 1.5;
     border: 1px solid #ced4da;
     border-radius: 0.25rem;
-    background-color: #e0e7e0;
+    background-color: white; /* Explicitly set to white to match other inputs */
   }
   .react-datepicker__input-container input:focus {
     outline: none;
@@ -89,6 +89,7 @@ const ExpirationDatePicker = ({ value, onChange, isInvalid }) => {
     <>
       <style>{customStyles}</style>
       <DatePicker
+        id="expirationDateInput" // Add an id to the DatePicker input
         selected={selectedDate}
         onChange={handleDateChange}
         onChangeRaw={handleInputChange}

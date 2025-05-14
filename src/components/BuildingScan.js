@@ -100,7 +100,7 @@ const BuildingScan = () => {
           cbdUnit: 'mg'
         }));
       } else {
-        setSubType(''); // Clear subType if Type is neither Flower nor Edible
+        setSubType(''); // Clear subType if Type is neither Flower nor Edible (e.g., Vape, Tincture, Topical)
         // Set THC and CBD units to mg for non-Flower
         setAdditionalFields(prev => ({
           ...prev,
@@ -455,6 +455,7 @@ const BuildingScan = () => {
                   <Col xs={7}>
                     <Form.Control 
                       type="text" 
+                      id="daysSupplyInput" // Added id for the extension to target
                       value={editedItem.days || ''} 
                       placeholder="Enter Days Supply"
                       onChange={(e) => handleInputChange('days', e.target.value)}
